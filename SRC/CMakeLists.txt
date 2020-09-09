@@ -500,7 +500,7 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(lapack ${SOURCES})
+add_lapack_library(lapack ${SOURCES})
 set_target_properties(
   lapack PROPERTIES
   VERSION ${LAPACK_VERSION}

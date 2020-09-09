@@ -97,7 +97,7 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(blas ${SOURCES})
+add_lapack_library(blas ${SOURCES})
 set_target_properties(
   blas PROPERTIES
   VERSION ${LAPACK_VERSION}

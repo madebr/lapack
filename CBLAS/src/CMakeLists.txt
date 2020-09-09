@@ -113,7 +113,7 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(cblas ${SOURCES})
+add_lapack_library(cblas ${SOURCES})
 set_target_properties(
   cblas PROPERTIES
   LINKER_LANGUAGE C

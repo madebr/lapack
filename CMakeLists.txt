@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-project(LAPACK Fortran C)
+project(LAPACK C)
+
+# Add the CMake directory for custon CMake modules
+list(APPEND CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE")
+
+option(LAPACK_F2C "Build lapack as C library" OFF)
+
+if(LAPACK_F2C)
+  include(Fortran2CFunctions)
+  lapack_find_f2c()
+else()
+  enable_language(Fortran)
+endif()
 
 set(LAPACK_MAJOR_VERSION 3)
 set(LAPACK_MINOR_VERSION 9)
@@ -9,9 +21,6 @@ set(
   LAPACK_VERSION
   ${LAPACK_MAJOR_VERSION}.${LAPACK_MINOR_VERSION}.${LAPACK_PATCH_VERSION}
   )
-
-# Add the CMake directory for custon CMake modules
-set(CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
 
 # Export all symbols on Windows when building shared libraries
 SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
@@ -161,13 +170,15 @@ CheckLAPACKCompilerFlags()
 # --------------------------------------------------
 # Check second function
 
-include(CheckTimeFunction)
-set(TIME_FUNC NONE ${TIME_FUNC})
-CHECK_TIME_FUNCTION(NONE TIME_FUNC)
-CHECK_TIME_FUNCTION(INT_CPU_TIME TIME_FUNC)
-CHECK_TIME_FUNCTION(EXT_ETIME TIME_FUNC)
-CHECK_TIME_FUNCTION(EXT_ETIME_ TIME_FUNC)
-CHECK_TIME_FUNCTION(INT_ETIME TIME_FUNC)
+if(NOT LAPACK_F2C)
+  include(CheckTimeFunction)
+  set(TIME_FUNC NONE ${TIME_FUNC})
+  CHECK_TIME_FUNCTION(NONE TIME_FUNC)
+  CHECK_TIME_FUNCTION(INT_CPU_TIME TIME_FUNC)
+  CHECK_TIME_FUNCTION(EXT_ETIME TIME_FUNC)
+  CHECK_TIME_FUNCTION(EXT_ETIME_ TIME_FUNC)
+  CHECK_TIME_FUNCTION(INT_ETIME TIME_FUNC)
+endif()
 message(STATUS "--> Will use second_${TIME_FUNC}.f and dsecnd_${TIME_FUNC}.f as timing function.")
 
 set(SECOND_SRC ${LAPACK_SOURCE_DIR}/INSTALL/second_${TIME_FUNC}.f)
